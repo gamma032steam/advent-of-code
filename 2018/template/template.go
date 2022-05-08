@@ -6,8 +6,8 @@ import (
 	"bufio"
 )
 
-func main() {
-	f, err := os.Open("2018/input-0.txt")
+func readFile() []string {
+	f, err := os.Open("input-0.txt")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -21,4 +21,10 @@ func main() {
 		data = append(data, scanner.Text())
 	}
 	
+	return data
+}
+
+func main() {
+	data := readFile()
+	fmt.Print(data)	
 }
