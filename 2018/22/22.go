@@ -26,7 +26,6 @@ type PriorityQueue []*state
 func (pq PriorityQueue) Len() int { return len(pq) }
 
 func (pq PriorityQueue) Less(i, j int) bool {
-	// We want Pop to give us the highest, not lowest, priority so we use greater than here.
 	return pq[i].distance < pq[j].distance
 }
 
@@ -48,36 +47,23 @@ func (pq *PriorityQueue) Pop() any {
 	return item
 }
 
-
-func getGeo() [][]int {
-	targetX := 9
-	targetY := 796
-	tX := targetX + 100
-	tY := targetY + 100
-	depth := 6969
-
-	// depth := 510
-	// tX := 30
-	// tY := 30
-	// targetX := 10
-	// targetY := 10
-
-	geo := make([][]int, (tY+1))
+func getGeo(depth int, targetX int, targetY int, sizeX int, sizeY int) [][]int {
+	geo := make([][]int, (sizeY+1))
 	for i := range geo {
-		geo[i] = make([]int, (tX+1))
+		geo[i] = make([]int, (sizeX+1))
 	}
 
 	// set up known values
-	for y := 0; y <= tY; y++ {
+	for y := 0; y <= sizeY; y++ {
 		geo[y][0] = y * 48271
 	}
-	for x := 0; x <= tX; x++ {
+	for x := 0; x <= sizeX; x++ {
 		geo[0][x] = x * 16807
 	}
 
 	// fill in X-1,Y * X,Y-1 rule
-	for y := 1; y <= tY; y++ {
-		for x := 1; x <= tX; x++ {
+	for y := 1; y <= sizeY; y++ {
+		for x := 1; x <= sizeX; x++ {
 			geo[y][x] = ((geo[y-1][x] + depth) % 20183) * ((geo[y][x-1] + depth) % 20183)
 		}
 	}
@@ -86,29 +72,27 @@ func getGeo() [][]int {
 	return geo
 }
 
-
 func main() {
-	// part 1
-	geo := getGeo()
-	fmt.Printf("%v", geo)
-
 	targetX := 9
 	targetY := 796
-	tX := targetX + 100
-	tY := targetY + 100
+	sizeX := targetX + 1000
+	sizeY := targetY + 1000
 	depth := 6969
 
 	// depth := 510
-	// tX := 30
-	// tY := 30
+	// sizeX := 30
+	// sizeY := 30
 	// targetX := 10
 	// targetY := 10
 
+	// part 1
+	geo := getGeo(depth, targetX, targetY, sizeX, sizeY)
+	fmt.Printf("%v", geo)
 
 	risk := 0
 	// convert to ero and sum risk
-	for y := 0; y <= tY; y++ {
-		for x := 0; x <= tX; x++ {
+	for y := 0; y <= sizeY; y++ {
+		for x := 0; x <= sizeX; x++ {
 			geo[y][x] = ((geo[y][x] + depth) % 20183) % 3
 			risk += geo[y][x]
 		}
@@ -130,10 +114,6 @@ func main() {
 		}
 
 		curr := heap.Pop(&pq).(*state)
-		currSit := situation{position: curr.position, tool: curr.tool}
-		if best[currSit] < curr.distance {
-			continue
-		}
 
 		var candidates []state
 		// switching to a valid tool
@@ -165,7 +145,7 @@ func main() {
 		for _, dir := range dirs {
 			newPos := pair{curr.position.x + dir.x, curr.position.y + dir.y}
 			// check if out of bounds
-			if newPos.x < 0 || newPos.x > tX || newPos.y < 0 || newPos.y > tY {
+			if newPos.x < 0 || newPos.x > sizeX || newPos.y < 0 || newPos.y > sizeY {
 				continue
 			}
 
@@ -194,7 +174,7 @@ func main() {
 			if b, ok := best[sit]; !ok || b > cand.distance {
 				c := cand
 				heap.Push(&pq, &c)
-				best[sit] = cand.distance
+				best[sit] = c.distance
 			} 
 		}
 	}
