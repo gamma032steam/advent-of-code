@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"container/heap"
 )
 
 type pair struct {
@@ -20,12 +21,39 @@ type state struct {
 	position pair
 }
 
+type PriorityQueue []*state
+
+func (pq PriorityQueue) Len() int { return len(pq) }
+
+func (pq PriorityQueue) Less(i, j int) bool {
+	// We want Pop to give us the highest, not lowest, priority so we use greater than here.
+	return pq[i].distance < pq[j].distance
+}
+
+func (pq PriorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
+}
+
+func (pq *PriorityQueue) Push(x any) {
+	item := x.(*state)
+	*pq = append(*pq, item)
+}
+
+func (pq *PriorityQueue) Pop() any {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	old[n-1] = nil  // avoid memory leak
+	*pq = old[0 : n-1]
+	return item
+}
+
 
 func getGeo() [][]int {
 	targetX := 9
 	targetY := 796
-	tX := targetX + 50
-	tY := targetY + 50
+	tX := targetX + 100
+	tY := targetY + 100
 	depth := 6969
 
 	// depth := 510
@@ -66,8 +94,8 @@ func main() {
 
 	targetX := 9
 	targetY := 796
-	tX := targetX + 50
-	tY := targetY + 50
+	tX := targetX + 100
+	tY := targetY + 100
 	depth := 6969
 
 	// depth := 510
@@ -88,19 +116,20 @@ func main() {
 	fmt.Println(risk)
 	fmt.Printf("%v", geo)
 
-	// part 2 - dfs
+	// part 2 - dijkstra's
 	init := state{distance: 0, tool: "torch", position: pair{0, 0}}
-	stack := []*state{&init}
+	pq := make(PriorityQueue, 1)
+	pq[0] = &init
+	heap.Init(&pq)
 	
 	best := map[situation]int{{position: pair{0, 0}, tool: "torch"}: 0}
 
-	for len(stack) > 0 {
-		if len(stack) % 1500 == 0 {
-			fmt.Println(len(stack))
+	for len(pq) > 0 {
+		if len(pq) % 1500 == 0 {
+			fmt.Println(len(pq))
 		}
 
-		var curr *state
-		curr, stack = stack[len(stack)-1], stack[:len(stack)-1]
+		curr := heap.Pop(&pq).(*state)
 		currSit := situation{position: curr.position, tool: curr.tool}
 		if best[currSit] < curr.distance {
 			continue
@@ -164,7 +193,7 @@ func main() {
 			sit := situation{position: cand.position, tool: cand.tool}
 			if b, ok := best[sit]; !ok || b > cand.distance {
 				c := cand
-				stack = append(stack, &c)
+				heap.Push(&pq, &c)
 				best[sit] = cand.distance
 			} 
 		}
