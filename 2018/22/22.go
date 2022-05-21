@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"container/heap"
+	"fmt"
 )
 
 type pair struct {
@@ -11,13 +11,13 @@ type pair struct {
 }
 
 type situation struct {
-	tool string
+	tool     string
 	position pair
 }
 
 type state struct {
 	distance int
-	tool string
+	tool     string
 	position pair
 }
 
@@ -42,15 +42,15 @@ func (pq *PriorityQueue) Pop() any {
 	old := *pq
 	n := len(old)
 	item := old[n-1]
-	old[n-1] = nil  // avoid memory leak
+	old[n-1] = nil // avoid memory leak
 	*pq = old[0 : n-1]
 	return item
 }
 
 func getGeo(depth int, targetX int, targetY int, sizeX int, sizeY int) [][]int {
-	geo := make([][]int, (sizeY+1))
+	geo := make([][]int, (sizeY + 1))
 	for i := range geo {
-		geo[i] = make([]int, (sizeX+1))
+		geo[i] = make([]int, (sizeX + 1))
 	}
 
 	// set up known values
@@ -64,7 +64,11 @@ func getGeo(depth int, targetX int, targetY int, sizeX int, sizeY int) [][]int {
 	// fill in X-1,Y * X,Y-1 rule
 	for y := 1; y <= sizeY; y++ {
 		for x := 1; x <= sizeX; x++ {
-			geo[y][x] = ((geo[y-1][x] + depth) % 20183) * ((geo[y][x-1] + depth) % 20183)
+			if x == targetX && y == targetY {
+				geo[y][x] = 0
+			} else {
+				geo[y][x] = ((geo[y-1][x] + depth) % 20183) * ((geo[y][x-1] + depth) % 20183)
+			}
 		}
 	}
 
@@ -75,8 +79,8 @@ func getGeo(depth int, targetX int, targetY int, sizeX int, sizeY int) [][]int {
 func main() {
 	targetX := 9
 	targetY := 796
-	sizeX := targetX + 1000
-	sizeY := targetY + 1000
+	sizeX := targetX + 50
+	sizeY := targetY + 50
 	depth := 6969
 
 	// depth := 510
@@ -105,11 +109,11 @@ func main() {
 	pq := make(PriorityQueue, 1)
 	pq[0] = &init
 	heap.Init(&pq)
-	
+
 	best := map[situation]int{{position: pair{0, 0}, tool: "torch"}: 0}
 
 	for len(pq) > 0 {
-		if len(pq) % 1500 == 0 {
+		if len(pq)%1500 == 0 {
 			fmt.Println(len(pq))
 		}
 
@@ -162,7 +166,7 @@ func main() {
 				// narrow
 				badGear = "climbing"
 			}
-			if (curr.tool == badGear) {
+			if curr.tool == badGear {
 				continue
 			}
 
@@ -175,7 +179,7 @@ func main() {
 				c := cand
 				heap.Push(&pq, &c)
 				best[sit] = c.distance
-			} 
+			}
 		}
 	}
 
