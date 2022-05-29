@@ -104,8 +104,15 @@ func readGroup(line string) group {
 	}
 	group.immunities = immunities
 
-	reWeaknesses := regexp.MustCompile(`.*weak to (.*)[;|)]`)
+	reWeaknesses := regexp.MustCompile(`.*weak to (.*)\)`)
 	weaknessesMatch := reWeaknesses.FindStringSubmatch(line)
+
+	reWeaknessesSemicolon := regexp.MustCompile(`.*weak to (.*);`)
+	weaknessesMatchSemicolon := reWeaknessesSemicolon.FindStringSubmatch(line)
+
+	if len(weaknessesMatchSemicolon) > 1 {
+		weaknessesMatch = weaknessesMatchSemicolon
+	}
 
 	var weaknesses []string
 	if len(weaknessesMatch) > 1 {
@@ -140,14 +147,7 @@ func readFile() []string {
 }
 
 func play(immune []group, infection []group) {
-	turn := 0
 	for {
-		turn += 1
-		if turn >= 5000 {
-			fmt.Printf("bad things")
-			fmt.Printf("%d", countArmyUnits(infection))
-			break
-		}
 		immune, infection = playRound(immune, infection)
 		if isWarDone(immune, infection) {
 			return
@@ -236,8 +236,6 @@ func performAttacks(immune []group, infection []group, attacks []attackMove) ([]
 
 		target, targetIdx := findGroup(attack.target, targetArmy)
 		damage := calculateDamage(*attacker, *target)
-		//fmt.Printf("attacking %d for %d\n", target.id, damage)
-
 		// kill enemy units
 		killedUnits := damage / targetArmy[targetIdx].hp
 		targetArmy[targetIdx].units -= killedUnits
@@ -266,6 +264,9 @@ func selectTargets(attackers []group, targets []group) (attacks []attackMove) {
 			break
 		}
 		enemyToAttack := pickEnemy(group, enemies)
+		if calculateDamage(group, enemyToAttack) == 0 {
+			continue
+		}
 		enemies = removeGroupFromArray(enemies, enemyToAttack)
 		attack := attackMove{target: enemyToAttack, attacker: group}
 		attacks = append(attacks, attack)
@@ -275,15 +276,10 @@ func selectTargets(attackers []group, targets []group) (attacks []attackMove) {
 
 // calculate the potential damage you can do
 func calculateDamage(attacker group, target group) int {
-	isImmune := false
 	for _, immunity := range target.immunities {
 		if attacker.damageType == immunity {
-			isImmune = true
-			break
+			return 0
 		}
-	}
-	if isImmune {
-		return 0
 	}
 
 	isWeak := false
