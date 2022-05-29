@@ -33,7 +33,7 @@ func (g *group) CalculatePower() {
 }
 
 // returns (immune, infection) tuple
-func readGroups(input []string) ([]group, []group) {
+func readGroups(input []string, boost int) ([]group, []group) {
 	var immuneGroups []group
 	var infectionGroups []group
 
@@ -50,7 +50,12 @@ func readGroups(input []string) ([]group, []group) {
 			continue
 		}
 
-		group := readGroup(line)
+		var group group
+		if army == "infection" {
+			group = readGroup(line, 0)
+		} else {
+			group = readGroup(line, boost)
+		}
 		group.id = id
 		group.army = army
 		id += 1
@@ -64,7 +69,7 @@ func readGroups(input []string) ([]group, []group) {
 	return immuneGroups, infectionGroups
 }
 
-func readGroup(line string) group {
+func readGroup(line string, boost int) group {
 	group := group{}
 
 	// read all the numbers
@@ -80,7 +85,7 @@ func readGroup(line string) group {
 		} else if i == 2 {
 			group.hp = num
 		} else if i == 3 {
-			group.damage = num
+			group.damage = num + boost
 		} else if i == 4 {
 			group.initiative = num
 		}
@@ -146,11 +151,13 @@ func readFile() []string {
 	return data
 }
 
-func play(immune []group, infection []group) {
+// return true if immune wins
+func play(immune []group, infection []group) bool {
 	for {
-		immune, infection = playRound(immune, infection)
-		if isWarDone(immune, infection) {
-			return
+		var totalKilled int
+		immune, infection, totalKilled = playRound(immune, infection)
+		if totalKilled == 0 || isWarDone(immune, infection) {
+			return len(immune) > 0 && totalKilled != 0
 		}		
 	}
 }
@@ -192,7 +199,7 @@ func removeGroupFromArray(groups []group, groupToRemove group) []group {
 	return groups
 }
 
-func playRound(immune []group, infection []group) ([]group, []group) {
+func playRound(immune []group, infection []group) ([]group, []group, int) {
 	sortByTurnPriority(immune)
 	sortByTurnPriority(infection)
 
@@ -217,7 +224,8 @@ func findGroup(group group, groups []group) (*group, int) {
 	return nil, -1
 }
 
-func performAttacks(immune []group, infection []group, attacks []attackMove) ([]group, []group) {
+func performAttacks(immune []group, infection []group, attacks []attackMove) ([]group, []group, int) {
+	totalKilled := 0
 	sortByInitiative(attacks)
 	for _, attack := range attacks {
 		var targetArmy, attackerArmy []group
@@ -238,6 +246,7 @@ func performAttacks(immune []group, infection []group, attacks []attackMove) ([]
 		damage := calculateDamage(*attacker, *target)
 		// kill enemy units
 		killedUnits := damage / targetArmy[targetIdx].hp
+		totalKilled += killedUnits
 		targetArmy[targetIdx].units -= killedUnits
 		// remove the group if they're all gone
 		if targetArmy[targetIdx].units <= 0 {
@@ -252,7 +261,7 @@ func performAttacks(immune []group, infection []group, attacks []attackMove) ([]
 		// recalculate effective power
 		targetArmy[targetIdx].CalculatePower()
 	}
-	return immune, infection
+	return immune, infection, totalKilled
 }
 
 func selectTargets(attackers []group, targets []group) (attacks []attackMove) {
@@ -322,6 +331,24 @@ func pickEnemy(attacker group, enemies []group) group {
 
 func main() {
 	data := readFile()
-	immune, infection := readGroups(data)
+	immune, infection := readGroups(data, 0)
 	play(immune, infection)
+
+	fmt.Printf("Part 2:\n")
+	// part 2
+	// bsearch over boost
+	lo, hi := 0, 100000
+	for lo < hi {
+		boost := (lo + hi) / 2
+		immune, infection := readGroups(data, boost)
+		didWin := play(immune, infection)
+		if didWin {
+			hi = boost
+		} else {
+			lo = boost + 1
+		}
+		if lo == hi {
+			break
+		}
+	}
 }
