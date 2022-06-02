@@ -156,7 +156,7 @@ func isBotInRangeOfArea(targetArea area, targetBot bot) bool {
 	return manhattanDistance(closestPointInArea, targetBot.position) <= targetBot.radius
 }
 
-func countBotsInArea(area area, bots[]bot) (inArea int) {
+func countBotsInRangeOfArea(area area, bots[]bot) (inArea int) {
 	for _, bot := range bots {
 		if isBotInRangeOfArea(area, bot) {
 			inArea += 1
@@ -208,14 +208,15 @@ func areaToPoint(a area) position {
 
 // finds the points in range of the most bots
 func bestPoints(bots []bot) []position {
+	// maintain a max heap of the areas with the largest number of bots in range
 	pq := make(PriorityQueue, 1)
 	totalArea := findTotalArea(bots)
-	totalArea.botsInArea = countBotsInArea(totalArea, bots)
+	totalArea.botsInArea = countBotsInRangeOfArea(totalArea, bots)
 	pq[0] = &totalArea
 	heap.Init(&pq)
 
-	// the number of bots the first singular point has in range
-	firstPointCount := -1
+	// the number of bots the first singular point we discover has in range
+	firstPointBotCount := -1
 
 	var points []position
 
@@ -224,9 +225,10 @@ func bestPoints(bots []bot) []position {
 		curr := heap.Pop(&pq).(*area)
 
 		if isPoint(*curr) {
-			if firstPointCount == -1 {
-				firstPointCount = curr.botsInArea
-			} else if curr.botsInArea < firstPointCount {
+			if firstPointBotCount == -1 {
+				firstPointBotCount = curr.botsInArea
+			} else if curr.botsInArea < firstPointBotCount {
+				// tiebreaking process is over, there can be no more points with the same number of bots in range
 				break
 			}
 			points = append(points, areaToPoint(*curr))
@@ -235,7 +237,7 @@ func bestPoints(bots []bot) []position {
 
 		// split the area into smaller areas
 		for _, newArea := range divideArea(*curr) {
-			newArea.botsInArea = countBotsInArea(newArea, bots)
+			newArea.botsInArea = countBotsInRangeOfArea(newArea, bots)
 			areaCopy := newArea
 			heap.Push(&pq, &areaCopy)
 		}
