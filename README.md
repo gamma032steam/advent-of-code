@@ -6,6 +6,7 @@ These are all my solutions.
 
 | Year      | Language |  Stars ⭐ |
 | ----------- | ----------- | ----------- |
+| 2022 | Python | In Progress :) |
 | 2021 | Python | 50/50       |
 | 2020 | Python | 26/50        | 
 | 2019 | JS/Python |  31/50        |
