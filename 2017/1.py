@@ -8,8 +8,8 @@ for i in range(len(y) - 1):
 print(tot)
 
 tot = 0
-for i in range(len(s) // 2):
-    if s[i] == s[i + (len(s) // 2)]: tot += int(s[i])
+for i in range((len(s) // 2)):
+    if s[i] == s[i + (len(s) // 2)]: tot += int(s[i]) * 2
 
 print(tot)
   

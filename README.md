@@ -11,7 +11,7 @@ These are all my solutions.
 | 2020 | Python | 26/50        | 
 | 2019 | JS/Python |  31/50        |
 | 2018 | Go/C | 24/50 
-| 2017 | Python | 10/50        | 
+| 2017 | Python | 14/50        | 
 | 2016 | Python | 19/50        |
 | 2015 | Python | 36/50        | 
 | **Total** | - | **194/350** |
