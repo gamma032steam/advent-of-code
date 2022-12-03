@@ -14,6 +14,6 @@ These are all my solutions.
 | 2017 | Python | 14/50        | 
 | 2016 | Python | 19/50        |
 | 2015 | Python | 36/50        | 
-| **Total** | - | **194/350** |
+| **Total** | - | **200/350** |
 
 Part of a broader set of solutions in [Awesome Advent of Code](https://github.com/Bogdanp/awesome-advent-of-code#python).
