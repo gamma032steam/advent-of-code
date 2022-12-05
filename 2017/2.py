@@ -3,7 +3,10 @@ import functools
 import re
 import random
 import collections
-from helpers.helpers import *
+import sys
+import os
+
+from helpers import whitespace_split
 
 if __name__ == "__main__":
     with open('./input/2.txt') as f:
