@@ -3,7 +3,9 @@ import functools
 import re
 import random
 import collections
+from helpers import *
+import sys
+sys.setrecursionlimit(100000)
 
-if __name__ == "__main__":
-    with open('./input.txt') as f:
-        data = f.read().splitlines()
+with open('./input.txt') as f:
+    data = f.read().splitlines()
