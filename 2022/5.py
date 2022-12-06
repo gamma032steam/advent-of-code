@@ -26,7 +26,7 @@ start = {
 # }
 
 with open('./input.txt') as f:
-    data = f.read()
+    data = f.read().strip()
     _, y = data.split('\n\n')
     #print(x)
     ins = []
