@@ -8,14 +8,19 @@ import sys
 sys.setrecursionlimit(100000)
 
 def solve(inp):
-    pass
+    k = 14
+    # k = 4
+    for i in range(len(inp)-k+1):
+        if len(set(inp[i:i+k])) == k:
+            print(i + k)
+            break
 
 try:
-    fname = './input.txt' 
+    fname = './6-input.txt' 
     f = open(fname)
     solve(f.read().strip())
 except:
     print(f"ERROR: Could not open {fname}.")
 
-sample=""""""
+sample="""mjqjpqmgbljsphdztnvjfqwrcgsmlb"""
 if len(sample) > 0: solve(sample)
