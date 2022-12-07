@@ -10,12 +10,15 @@ sys.setrecursionlimit(100000)
 def solve(inp):
     pass
 
+fname = './input.txt' 
 try:
-    fname = './input.txt' 
     f = open(fname)
-    solve(f.read().strip())
-except:
-    print(f"ERROR: Could not open {fname}.")
+except Exception as e:
+    print(f"ERROR: Could not open {fname}: {e}.")
+solve(f.read().strip())
 
 sample=""""""
-if len(sample) > 0: solve(sample)
+if len(sample) > 0:
+    print('\n---SAMPLE---')
+    solve(sample)
+    print('------------')
