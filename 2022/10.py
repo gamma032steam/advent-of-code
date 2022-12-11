@@ -44,7 +44,7 @@ def solve(inp):
     for line in grid:
         print(''.join(line))
 
-fname = './input.txt' 
+fname = './10-input.txt' 
 try:
     f = open(fname)
 except Exception as e:

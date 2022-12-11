@@ -1,4 +1,14 @@
 import re
+import operator
+
+ops = {
+    '+' : operator.add,
+    '-' : operator.sub,
+    '*' : operator.mul,
+    '/' : operator.truediv,  # use operator.div for Python 2
+    '%' : operator.mod,
+    '^' : operator.xor,
+}
 
 def whitespace_split(str):
     '''Splits on all whitespace, not just spaces.'''
