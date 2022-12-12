@@ -19,7 +19,7 @@ def solve(inp):
                     return x, y
 
     sx, sy = find(grid, 'S')
-    
+
     a_locs = []
     for y in range(len(grid)):
         for x in range(len(grid[0])):
@@ -37,10 +37,7 @@ def solve(inp):
 
     while queue:
         x, y, dist = queue.pop(0)
-        for dx, dy in [(1, 0), (-1, 0), (0, -1), (0, 1)]:
-            nx = x + dx
-            ny = y + dy
-            if not (0 <= ny < len(grid) and 0 <= nx < len(grid[0])): continue
+        for nx, ny in helpers.adjacent(x, y, grid):
             grad = grid[ny][nx] - grid[y][x]
             if grad > 1: continue
             if (nx, ny) in seen: continue
