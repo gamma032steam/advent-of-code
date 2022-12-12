@@ -12,25 +12,14 @@ def solve(inp):
     for line in inp.splitlines():
         grid.append([ord(x) - ord('a') for x in list(line)])
 
-    def find(grid, s):
-        for y in range(len(grid)):
-            for x in range(len(grid[0])):
-                if grid[y][x] == (ord(s) - ord('a')):
-                    return x, y
-
-    sx, sy = find(grid, 'S')
-
-    a_locs = []
-    for y in range(len(grid)):
-        for x in range(len(grid[0])):
-            if grid[y][x] == 0:
-                a_locs.append((x, y))
+    sx, sy = helpers.find_nd(grid, ord('S') - ord('a'))
+    a_locs = helpers.find_all_nd(grid, 0)
     a_locs.append((sx, sy))
 
     queue = [(x, y, 0) for x, y in a_locs]
     seen = set(a_locs)
 
-    ex, ey = find(grid, 'E')
+    ex, ey = helpers.find_nd(grid, ord('E') - ord('a'))
 
     grid[sy][sx] = 0
     grid[ey][ex] = 25
