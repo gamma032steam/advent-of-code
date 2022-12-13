@@ -83,4 +83,5 @@ def find_all_nd_rec(grid, target, path=[], seen=[]):
 
 assert(find_all_nd([[0, 1], [2,3]], 2) == [(0, 1)])
 assert(find_all_nd([[[0, 1], [2, 3]], [[4, 7],[6,7]]], 7) == [(1, 0, 1), (1, 1, 1)])
+assert(find_all_nd([[[0, 1], [2, 3]], [[4, 7],[6,7]]], 1) == [(1, 0, 0)])
 

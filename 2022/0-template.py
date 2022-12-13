@@ -13,9 +13,9 @@ def solve(inp):
 fname = './input.txt' 
 try:
     f = open(fname)
-    solve(f.read().strip())
 except Exception as e:
     print(f"ERROR: Could not open {fname}: {e}.")
+solve(f.read().strip())
 
 sample="""
 """
