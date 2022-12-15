@@ -60,7 +60,7 @@ def solve(inp):
                 return
             dy += 1
         dx += 1
-fname = './input.txt' 
+fname = './15-input.txt' 
 try:
     f = open(fname)
 except Exception as e:
