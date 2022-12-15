@@ -17,8 +17,7 @@ except Exception as e:
     print(f"ERROR: Could not open {fname}: {e}.")
 solve(f.read().strip())
 
-sample="""
-"""
+sample=""""""
 if len(sample) > 0:
     print('\n---SAMPLE---')
     solve(sample)
