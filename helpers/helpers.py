@@ -18,7 +18,7 @@ def whitespace_split(str):
 assert(whitespace_split('a b    c d e') == ['a', 'b', 'c', 'd', 'e'])
 
 def ints(s):
-    return [int(x) for x in re.findall(r'\d+', s)]
+    return [int(x) for x in re.findall(r'[+-]?\d+', s)]
 
 assert(ints('go from 32 to 42') == [32, 42])
 
