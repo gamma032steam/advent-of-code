@@ -85,3 +85,28 @@ assert(find_all_nd([[0, 1], [2,3]], 2) == [(0, 1)])
 assert(find_all_nd([[[0, 1], [2, 3]], [[4, 7],[6,7]]], 7) == [(1, 0, 1), (1, 1, 1)])
 assert(find_all_nd([[[0, 1], [2, 3]], [[4, 7],[6,7]]], 1) == [(1, 0, 0)])
 
+def manhattan(x, y):
+    return sum(abs(x - y) for x, y in zip(x, y))
+
+assert(manhattan((-2, 5), (8, 9)) == (10 + 4))
+
+def floyd_warshall(graph, edges=None):
+    '''Finds the distange from one node to every other node. If no edge weights
+    are provided, assumes a cost of 1.'''
+    distance = collections.defaultdict(lambda: float('inf'))
+
+    # add all the known distances
+    for u, vs in graph.items():
+        distance[(u, u)] = 0
+        for v in vs:
+            edge_weight = 1 if edges is None else edges[(u, v)]
+            distance[(u, v)] = edge_weight
+
+    # k is the 'stepping stone'
+    for k in graph:
+        for i in graph:
+            for j in graph:
+                if distance[(i, j)] > distance[(i, k)] + distance[(k, j)]:
+                    distance[(i, j)] = distance[(i, k)] + distance[(k, j)]
+
+    return distance
