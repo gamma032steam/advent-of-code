@@ -132,7 +132,7 @@ def solve(jet):
                 break
             shape_points = new_points
     print(highest + 1)
-fname = './input.txt' 
+fname = './17-input.txt' 
 try:
     f = open(fname)
 except Exception as e:
