@@ -14,7 +14,6 @@ def solve(inp):
         data.append(line.split())
         ns = {}
     while len(ns) < (len(data)):
-        #print(len(ns), len(data))
         for m in data:
             if m[0] == 'root:':
                 name, v1, op, v2 = m
@@ -31,8 +30,7 @@ def solve(inp):
                 if v1 in ns and v2 in ns:
                     ns[name[:-1]] = f'({ns[v1]}{op}{ns[v2]})'
 
-    #print(ns)
-    print(ns['root'])
+    print(ns['root']) # drop this into mathpapa.com!
 
 fname = './21-input.txt' 
 try:
