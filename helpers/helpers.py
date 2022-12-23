@@ -110,3 +110,12 @@ def floyd_warshall(graph, edges=None):
                     distance[(i, j)] = distance[(i, k)] + distance[(k, j)]
 
     return distance
+
+def min_max_bounds(it):
+    minx, maxx, miny, maxy = float('inf'), float('-inf'), float('inf'), float('-inf')
+    for x, y in it:
+        minx = min(minx, x)
+        maxx = max(maxx, x)
+        miny = min(miny, y)
+        maxy = max(maxy, y)
+    return minx, maxx, miny, maxy     
