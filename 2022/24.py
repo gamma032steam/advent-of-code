@@ -51,16 +51,14 @@ def solve(inp):
 
         if y == len(grid) - 1 and x == len(grid[0]) - 2:
             been_end = True
-            #print('end')
             h = True
 
         if (x, y) == (1, 0) and been_end:
             been_start = True
             i = True
-            print('start')
 
         if y == len(grid) - 1 and x == len(grid[0]) - 2 and been_start and been_end:
-            print(dist)
+            print(dist - 1)
             return
 
         if len(maps) < dist + 1:
