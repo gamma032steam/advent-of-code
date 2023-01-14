@@ -65,21 +65,18 @@ assert(find_nd([[[0, 1], [2, 3]], [[4, 5],[6,7]]], 7) == (1, 1, 1))
 
 def find_all_nd(grid, target):
     '''Finds the coordinate locations of the targets inside the grid, where grid
-    can be of any dimension.'''
+    can be of any dimension. Returns starting from the deepest nested index.'''
     seen = []
     find_all_nd_rec(grid, target, [], seen)
     return seen
 
 def find_all_nd_rec(grid, target, path=[], seen=[]):
     for i, element in enumerate(grid):
-        if element != target and (isinstance(element, list) or isinstance(element, tuple)):
+        if element != target and (isinstance(element, (list, tuple)) or (isinstance(element, str) and len(element) > 1)):
             path.insert(0, i)
-            search = find_all_nd_rec(element, target, path, seen)
+            find_all_nd_rec(element, target, path, seen)
             path.pop(0)
-        else:
-            if element == target: seen.append((i, *path))
-
-    return None
+        elif element == target: seen.append((i, *path))
 
 assert(find_all_nd([[0, 1], [2,3]], 2) == [(0, 1)])
 assert(find_all_nd([[[0, 1], [2, 3]], [[4, 7],[6,7]]], 7) == [(1, 0, 1), (1, 1, 1)])
