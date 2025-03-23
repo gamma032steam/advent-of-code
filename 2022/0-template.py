@@ -3,12 +3,13 @@ import functools
 import re
 import random
 import collections
-from helpers import *
+import helpers
 import sys
 sys.setrecursionlimit(100000)
 
 def solve(inp):
-    pass
+    for line in inp.splitlines():
+        pass
 
 fname = './input.txt' 
 try:
